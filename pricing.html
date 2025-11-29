@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarifs & Abonnements - WebForge AI</title>
+    <meta name="description" content="Choisissez le plan adapté à vos besoins. De la génération gratuite aux solutions d'entreprise sur mesure.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="main-nav glass">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-cube"></i> WebForge<span>AI</span>
+            </a>
+            
+            <div class="burger-menu" id="burger-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <div class="nav-links" id="nav-links">
+                <a href="features.html">Fonctionnalités</a>
+                <a href="index.html#demo">Démo</a>
+                <a href="pricing.html" class="active">Tarifs</a>
+                
+                <div class="auth-buttons" id="auth-buttons">
+                    <!-- Injecté via JS -->
+                    <a href="login.html" class="nav-link">Connexion</a>
+                    <a href="register.html" class="btn-primary">Commencer Gratuitement</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="hero small-hero">
+        <div class="container hero-content text-center">
+            <h1>Des tarifs simples et <span class="gradient-text">transparents</span></h1>
+            <p>Commencez gratuitement, évoluez selon vos besoins. Aucun frais caché.</p>
+        </div>
+        <div class="hero-bg-glow"></div>
+    </header>
+
+    <!-- Pricing Section -->
+    <section class="section pricing-section">
+        <div class="container">
+            <!-- Toggle Monthly/Yearly (Visual only for this demo) -->
+            <div class="pricing-toggle text-center mb-5">
+                <span class="toggle-label active">Mensuel</span>
+                <div class="toggle-switch">
+                    <input type="checkbox" id="billing-toggle">
+                    <label for="billing-toggle"></label>
+                </div>
+                <span class="toggle-label">Annuel <span class="badge-discount">-20%</span></span>
+            </div>
+
+            <div class="pricing-grid">
+                
+                <!-- Free Plan -->
+                <div class="card glass pricing-card">
+                    <div class="pricing-header">
+                        <h3>Découverte</h3>
+                        <div class="price">0€<span>/mois</span></div>
+                        <p>Pour tester la puissance de l'IA.</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="fa-solid fa-check"></i> 1 Projet actif</li>
+                        <li><i class="fa-solid fa-check"></i> Générateur IA (GPT-3.5)</li>
+                        <li><i class="fa-solid fa-check"></i> Éditeur de code basique</li>
+                        <li><i class="fa-solid fa-check"></i> Hébergement sous-domaine</li>
+                        <li class="disabled"><i class="fa-solid fa-xmark"></i> Export du code</li>
+                        <li class="disabled"><i class="fa-solid fa-xmark"></i> Support prioritaire</li>
+                    </ul>
+                    <div class="pricing-footer">
+                        <button class="btn-secondary full-width plan-btn" data-plan="free">Commencer</button>
+                    </div>
+                </div>
+
+                <!-- Pro Plan -->
+                <div class="card glass pricing-card popular">
+                    <div class="popular-badge">Recommandé</div>
+                    <div class="pricing-header">
+                        <h3>Pro</h3>
+                        <div class="price gradient-text">29€<span>/mois</span></div>
+                        <p>Pour les créateurs et freelances.</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="fa-solid fa-check"></i> 10 Projets actifs</li>
+                        <li><i class="fa-solid fa-check"></i> <strong>Générateur IA (GPT-4)</strong></li>
+                        <li><i class="fa-solid fa-check"></i> Éditeur Monaco Complet</li>
+                        <li><i class="fa-solid fa-check"></i> Domaines personnalisés</li>
+                        <li><i class="fa-solid fa-check"></i> Export HTML/CSS/JS</li>
+                        <li><i class="fa-solid fa-check"></i> Analytics de base</li>
+                    </ul>
+                    <div class="pricing-footer">
+                        <button class="btn-primary full-width plan-btn" data-plan="pro">Choisir Pro</button>
+                    </div>
+                </div>
+
+                <!-- Enterprise Plan -->
+                <div class="card glass pricing-card">
+                    <div class="pricing-header">
+                        <h3>Enterprise</h3>
+                        <div class="price">Sur devis</div>
+                        <p>Pour les agences et grandes équipes.</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="fa-solid fa-check"></i> Projets illimités</li>
+                        <li><i class="fa-solid fa-check"></i> Modèles IA personnalisés</li>
+                        <li><i class="fa-solid fa-check"></i> API Access</li>
+                        <li><i class="fa-solid fa-check"></i> Collaboration d'équipe</li>
+                        <li><i class="fa-solid fa-check"></i> SLA 99.9%</li>
+                        <li><i class="fa-solid fa-check"></i> Support dédié 24/7</li>
+                    </ul>
+                    <div class="pricing-footer">
+                        <button class="btn-secondary full-width plan-btn" data-plan="enterprise">Contacter</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="section">
+        <div class="container small-container">
+            <div class="section-header text-center">
+                <h2>Questions Fréquentes</h2>
+            </div>
+            <div class="faq-list">
+                <div class="card glass faq-item">
+                    <h4>Puis-je changer de plan à tout moment ?</h4>
+                    <p>Oui, vous pouvez mettre à niveau ou rétrograder votre plan à tout moment depuis votre tableau de bord. Les changements sont immédiats.</p>
+                </div>
+                <div class="card glass faq-item">
+                    <h4>Le code généré m'appartient-il ?</h4>
+                    <p>Absolument. Avec les plans Pro et Enterprise, vous possédez 100% des droits sur le code généré et pouvez l'exporter pour l'héberger ailleurs.</p>
+                </div>
+                <div class="card glass faq-item">
+                    <h4>Quels moyens de paiement acceptez-vous ?</h4>
+                    <p>Nous utilisons Stripe pour traiter les paiements de manière sécurisée. Nous acceptons toutes les cartes de crédit majeures.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>WebForge AI</h4>
+                    <p>La plateforme de génération de sites web nouvelle génération.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Produit</h4>
+                    <a href="features.html">Fonctionnalités</a>
+                    <a href="pricing.html">Tarifs</a>
+                    <a href="dashboard.html">Dashboard</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Légal</h4>
+                    <a href="#">Mentions légales</a>
+                    <a href="#">Confidentialité</a>
+                    <a href="#">CGU</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Social</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#"><i class="fa-brands fa-github"></i></a>
+                        <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 WebForge AI. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    
+    <!-- Supabase Logic -->
+    <script type="module">
+        import { supabase } from './supabaseClient.js';
+        import { checkSession, logout } from './auth-oauth.js';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 1. Vérification de la session
+            const session = await checkSession();
+            const authButtonsContainer = document.getElementById('auth-buttons');
+            const planButtons = document.querySelectorAll('.plan-btn');
+
+            if (session) {
+                // --- UTILISATEUR CONNECTÉ ---
+                const user = session.user;
+
+                // Mise à jour du menu
+                authButtonsContainer.innerHTML = `
+                    <a href="dashboard.html" class="btn-secondary">
+                        <i class="fa-solid fa-gauge"></i> Dashboard
+                    </a>
+                    <button id="btn-logout-nav" class="btn-logout">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                `;
+
+                // Gestionnaire de déconnexion
+                document.getElementById('btn-logout-nav').addEventListener('click', async () => {
+                    await logout();
+                    window.location.reload();
+                });
+
+                // 2. Récupération du plan actuel
+                // On suppose une table 'subscriptions' avec user_id et plan ('free', 'pro', 'enterprise')
+                // Si pas d'entrée, on considère 'free' par défaut
+                let currentPlan = 'free';
+
+                try {
+                    const { data, error } = await supabase
+                        .from('subscriptions')
+                        .select('plan')
+                        .eq('user_id', user.id)
+                        .maybeSingle();
+
+                    if (data && data.plan) {
+                        currentPlan = data.plan;
+                    }
+                } catch (err) {
+                    console.error("Erreur récupération plan:", err);
+                }
+
+                // 3. Mise à jour de l'UI des cartes de prix
+                planButtons.forEach(btn => {
+                    const planType = btn.getAttribute('data-plan');
+
+                    if (planType === currentPlan) {
+                        // Plan Actuel
+                        btn.textContent = "Plan Actuel";
+                        btn.classList.remove('btn-primary', 'btn-secondary');
+                        btn.classList.add('btn-disabled'); // Style CSS à prévoir ou inline
+                        btn.style.opacity = "0.6";
+                        btn.style.cursor = "not-allowed";
+                        btn.disabled = true;
+                    } else {
+                        // Autres plans
+                        if (planType === 'enterprise') {
+                            btn.textContent = "Contacter l'équipe";
+                            btn.onclick = () => window.location.href = "mailto:sales@webforge.ai";
+                        } else {
+                            // Logique simple : si on est Free, on peut upgrade vers Pro
+                            // Si on est Pro, on ne gère pas le downgrade ici pour l'instant
+                            if (currentPlan === 'free' && planType === 'pro') {
+                                btn.textContent = "Mettre à niveau";
+                                btn.onclick = () => handleUpgrade(planType);
+                            } else if (currentPlan === 'pro' && planType === 'free') {
+                                btn.textContent = "Rétrograder"; // Simplification
+                                btn.onclick = () => alert("Veuillez contacter le support pour rétrograder.");
+                            }
+                        }
+                    }
+                });
+
+            } else {
+                // --- VISITEUR (NON CONNECTÉ) ---
+                // Les boutons redirigent vers l'inscription
+                planButtons.forEach(btn => {
+                    btn.onclick = () => {
+                        window.location.href = 'register.html';
+                    };
+                });
+            }
+        });
+
+        // Fonction simulée de mise à niveau (intégration Stripe future)
+        async function handleUpgrade(plan) {
+            alert(`Redirection vers le paiement pour le plan ${plan.toUpperCase()}... (Simulation)`);
+            // Ici, on appellerait une Edge Function Supabase pour créer une session Stripe
+        }
+    </script>
+</body>
+</html>

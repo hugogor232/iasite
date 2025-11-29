@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord - WebForge AI</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* Specific Dashboard Styles overrides/additions */
+        body {
+            background-color: var(--bg-dark);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Layout */
+        .dashboard-layout {
+            display: flex;
+            width: 100%;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: rgba(30, 30, 46, 0.95);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.1) 0%, transparent 100%);
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .sidebar-footer {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .user-mini-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .user-details h4 {
+            font-size: 0.9rem;
+            margin: 0;
+            color: var(--text-light);
+        }
+
+        .user-details span {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Main Content */
+        .main-content-wrapper {
+            flex: 1;
+            margin-left: 260px;
+            padding: 2rem;
+            width: calc(100% - 260px);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary-color);
+        }
+
+        .stat-info h3 {
+            font-size: 1.8rem;
+            margin: 0;
+            color: var(--text-light);
+        }
+
+        .stat-info p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Projects Grid */
+        .projects-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .project-card {
+            background: rgba(30, 30, 46, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.2s, border-color 0.2s;
+            position: relative;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+        }
+
+        .project-preview {
+            height: 160px;
+            background: #151520;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .project-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+        }
+        
+        .project-preview .no-preview {
+            color: var(--text-muted);
+            font-size: 3rem;
+        }
+
+        .project-status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+        }
+
+        .status-published { color: #10b981; }
+        .status-draft { color: #f59e0b; }
+
+        .project-info {
+            padding: 1.25rem;
+        }
+
+        .project-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .project-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .project-actions {
+            display: flex;
+            gap: 0.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 1rem;
+        }
+
+        .btn-icon {
+            flex: 1;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-icon:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+        }
+
+        .btn-icon.delete:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border-color: #ef4444;
+        }
+
+        /* Empty State */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 2rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .main-content-wrapper {
+                margin-left: 0;
+                width: 100%;
+                padding: 1rem;
+            }
+            .mobile-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="logo">
+                    <i class="fa-solid fa-cube"></i> WebForge<span>AI</span>
+                </a>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item active">
+                    <i class="fa-solid fa-gauge-high"></i> Tableau de bord
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fa-solid fa-layer-group"></i> Mes Projets
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fa-solid fa-chart-pie"></i> Analytics
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fa-solid fa-gear"></i> Paramètres
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-mini-profile">
+                    <div class="user-avatar" id="user-avatar-initials">U</div>
+                    <div class="user-details">
+                        <h4 id="user-name-display">Chargement...</h4>
+                        <span id="user-plan-display">Plan Gratuit</span>
+                    </div>
+                </div>
+                <button id="btn-logout" class="btn-secondary full-width btn-sm">
+                    <i class="fa-solid fa-right-from-bracket"></i> Déconnexion
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content-wrapper">
+            <!-- Mobile Toggle -->
+            <div class="mobile-header d-md-none">
+                <button class="btn-icon" id="sidebar-toggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="logo">WebForge<span>AI</span></div>
+            </div>
+
+            <!-- Header -->
+            <div class="projects-header">
+                <div>
+                    <h1 id="welcome-msg">Bonjour</h1>
+                    <p class="text-muted">Voici un aperçu de vos projets.</p>
+                </div>
+                <a href="wizard.html" class="btn-primary">
+                    <i class="fa-solid fa-plus"></i> Nouveau Projet
+                </a>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fa-solid fa-folder-open"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="stat-projects">0</h3>
+                        <p>Projets Actifs</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                        <i class="fa-solid fa-eye"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="stat-views">0</h3>
+                        <p>Vues Totales</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+                        <i class="fa-solid fa-database"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="stat-storage">0 MB</h3>
+                        <p>Stockage Utilisé</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Projects List -->
+            <div class="projects-section">
+                <h2 class="mb-4">Mes Sites</h2>
+                
+                <div id="projects-container" class="projects-grid">
+                    <!-- Loading State -->
+                    <div class="card glass" style="height: 300px; display: flex; align-items: center; justify-content: center; grid-column: 1/-1;">
+                        <span class="loader"></span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    
+    <!-- Supabase Logic -->
+    <script type="module">
+        import { supabase } from './supabaseClient.js';
+        import { protectPrivatePage, logout } from './auth-oauth.js';
+
+        let currentUser = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 1. Protection de la page
+            const session = await protectPrivatePage();
+            if (!session) return; // Redirection gérée par protectPrivatePage
+            
+            currentUser = session.user;
+            
+            // 2. Initialisation UI
+            setupEventListeners();
+            await loadUserProfile();
+            await loadProjects();
+        });
+
+        function setupEventListeners() {
+            // Logout
+            document.getElementById('btn-logout').addEventListener('click', async () => {
+                await logout();
+            });
+
+            // Mobile Sidebar Toggle
+            const toggleBtn = document.getElementById('sidebar-toggle');
+            const sidebar = document.getElementById('sidebar');
+            if(toggleBtn) {
+                toggleBtn.addEventListener('click', () => {
+                    sidebar.classList.toggle('active');
+                });
+            }
+
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 768 && 
+                    !sidebar.contains(e.target) && 
+                    !toggleBtn.contains(e.target) && 
+                    sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        }
+
+        async function loadUserProfile() {
+            try {
+                // Essayer de récupérer le profil, sinon utiliser les métadonnées auth
+                const { data: profile, error } = await supabase
+                    .from('profiles')
+                    .select('full_name, avatar_url, role')
+                    .eq('id', currentUser.id)
+                    .single();
+
+                let displayName = currentUser.email.split('@')[0];
+                let avatarUrl = null;
+
+                if (profile) {
+                    if (profile.full_name) displayName = profile.full_name;
+                    if (profile.avatar_url) avatarUrl = profile.avatar_url;
+                } else if (currentUser.user_metadata && currentUser.user_metadata.full_name) {
+                    displayName = currentUser.user_metadata.full_name;
+                    avatarUrl = currentUser.user_metadata.avatar_url;
+                }
+
+                // Update UI
+                document.getElementById('user-name-display').textContent = displayName;
+                document.getElementById('welcome-msg').textContent = `Bonjour, ${displayName.split(' ')[0]}`;
+                
+                const avatarEl = document.getElementById('user-avatar-initials');
+                if (avatarUrl) {
+                    avatarEl.innerHTML = `<img src="${avatarUrl}" alt="Avatar" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+                    avatarEl.style.background = 'transparent';
+                } else {
+                    avatarEl.textContent = displayName.charAt(0).toUpperCase();
+                }
+
+            } catch (err) {
+                console.error("Erreur chargement profil:", err);
+            }
+        }
+
+        async function loadProjects() {
+            const container = document.getElementById('projects-container');
+            
+            try {
+                const { data: projects, error } = await supabase
+                    .from('projects')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                // Update Stats
+                document.getElementById('stat-projects').textContent = projects.length;
+                // Simulation stats vues/storage (à remplacer par vraie table analytics plus tard)
+                document.getElementById('stat-views').textContent = projects.reduce((acc, curr) => acc + (curr.views || 0), 0);
+                document.getElementById('stat-storage').textContent = (projects.length * 2.5).toFixed(1) + ' MB'; // Fake calc
+
+                container.innerHTML = '';
+
+                if (projects.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                            <h3>Aucun projet pour le moment</h3>
+                            <p>Utilisez l'IA pour générer votre premier site web en quelques secondes.</p>
+                            <a href="wizard.html" class="btn-primary mt-3">Créer mon premier site</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                projects.forEach(project => {
+                    const date = new Date(project.created_at).toLocaleDateString('fr-FR', {
+                        day: 'numeric', month: 'short', year: 'numeric'
+                    });
+                    
+                    const statusClass = project.status === 'published' ? 'status-published' : 'status-draft';
+                    const statusLabel = project.status === 'published' ? 'En ligne' : 'Brouillon';
+                    const previewImg = project.thumbnail_url 
+                        ? `<img src="${project.thumbnail_url}" alt="${project.name}">` 
+                        : `<div class="no-preview"><i class="fa-solid fa-code"></i></div>`;
+
+                    const card = document.createElement('div');
+                    card.className = 'project-card';
+                    card.innerHTML = `
+                        <div class="project-preview">
+                            ${previewImg}
+                            <span class="project-status ${statusClass}">${statusLabel}</span>
+                        </div>
+                        <div class="project-info">
+                            <div class="project-title" title="${project.name}">${project.name}</div>
+                            <div class="project-meta">
+                                <span><i class="fa-regular fa-calendar"></i> ${date}</span>
+                                <span>ID: ${project.id.slice(0, 4)}...</span>
+                            </div>
+                            <div class="project-actions">
+                                <a href="editor.html?id=${project.id}" class="btn-icon" title="Éditer le code">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                                <a href="preview.html?id=${project.id}" class="btn-icon" title="Voir le site" target="_blank">
+                                    <i class="fa-solid fa-external-link-alt"></i>
+                                </a>
+                                <button class="btn-icon delete" title="Supprimer" onclick="window.deleteProject('${project.id}')">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+
+            } catch (err) {
+                console.error("Erreur chargement projets:", err);
+                container.innerHTML = `<div class="alert alert-danger">Impossible de charger les projets.</div>`;
+            }
+        }
+
+        // Exposer la fonction delete au scope global pour le onclick
+        window.deleteProject = async (projectId) => {
+            if (!confirm("Êtes-vous sûr de vouloir supprimer ce projet ? Cette action est irréversible.")) {
+                return;
+            }
+
+            try {
+                // 1. Supprimer de la BDD
+                const { error } = await supabase
+                    .from('projects')
+                    .delete()
+                    .eq('id', projectId);
+
+                if (error) throw error;
+
+                // 2. Recharger la liste
+                await loadProjects();
+
+            } catch (err) {
+                alert("Erreur lors de la suppression : " + err.message);
+            }
+        };
+    </script>
+</body>
+</html>

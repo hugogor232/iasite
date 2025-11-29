@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - WebForge AI</title>
+    <meta name="description" content="Connectez-vous à votre espace WebForge AI pour gérer vos projets de sites web.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="auth-page">
+
+    <!-- Navigation Minimaliste -->
+    <nav class="auth-nav">
+        <a href="index.html" class="logo">
+            <i class="fa-solid fa-cube"></i> WebForge<span>AI</span>
+        </a>
+        <a href="register.html" class="nav-link">Pas encore de compte ?</a>
+    </nav>
+
+    <div class="auth-container">
+        <div class="auth-card glass">
+            <div class="auth-header">
+                <h2>Bon retour</h2>
+                <p>Accédez à votre espace de création</p>
+            </div>
+
+            <!-- Social Login -->
+            <div class="social-login">
+                <button id="btn-google" class="btn-social">
+                    <i class="fa-brands fa-google"></i> Google
+                </button>
+                <button id="btn-github" class="btn-social">
+                    <i class="fa-brands fa-github"></i> GitHub
+                </button>
+            </div>
+
+            <div class="divider">
+                <span>ou avec email</span>
+            </div>
+
+            <!-- Email Login Form -->
+            <form id="login-form" class="auth-form">
+                <div class="form-group">
+                    <label for="email">Adresse Email</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-envelope input-icon"></i>
+                        <input type="email" id="email" name="email" placeholder="exemple@email.com" required autocomplete="email">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-lock input-icon"></i>
+                        <input type="password" id="password" name="password" placeholder="••••••••" required autocomplete="current-password">
+                        <button type="button" class="toggle-password" aria-label="Afficher le mot de passe">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="form-footer">
+                        <a href="forgot-password.html" class="forgot-link">Mot de passe oublié ?</a>
+                    </div>
+                </div>
+
+                <!-- Error Message Container -->
+                <div id="error-message" class="alert alert-danger" style="display: none;"></div>
+
+                <button type="submit" class="btn-primary full-width" id="submit-btn">
+                    <span class="btn-text">Se connecter</span>
+                    <span class="loader" style="display: none;"></span>
+                </button>
+            </form>
+        </div>
+        
+        <div class="auth-footer-links">
+            <p>En vous connectant, vous acceptez nos <a href="#">CGU</a> et notre <a href="#">Politique de confidentialité</a>.</p>
+        </div>
+    </div>
+
+    <div class="hero-bg-glow"></div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    
+    <!-- Supabase Auth Logic -->
+    <script type="module">
+        import { loginWithEmail, loginWithOAuth, checkSession } from './auth-oauth.js';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 1. Redirection si déjà connecté
+            const session = await checkSession();
+            if (session) {
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            // 2. Gestion du formulaire Email/Password
+            const loginForm = document.getElementById('login-form');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const submitBtn = document.getElementById('submit-btn');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const loader = submitBtn.querySelector('.loader');
+            const errorDiv = document.getElementById('error-message');
+
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Reset UI
+                errorDiv.style.display = 'none';
+                errorDiv.textContent = '';
+                submitBtn.disabled = true;
+                btnText.style.display = 'none';
+                loader.style.display = 'inline-block';
+
+                const email = emailInput.value;
+                const password = passwordInput.value;
+
+                try {
+                    const { data, error } = await loginWithEmail(email, password);
+
+                    if (error) {
+                        throw error;
+                    }
+
+                    // Succès : Redirection gérée par auth-oauth.js ou ici
+                    // loginWithEmail retourne { data, error }
+                    // Si pas d'erreur, Supabase gère la session, on redirige
+                    window.location.href = 'dashboard.html';
+
+                } catch (err) {
+                    console.error('Login error:', err);
+                    errorDiv.textContent = "Email ou mot de passe incorrect.";
+                    errorDiv.style.display = 'block';
+                    
+                    // Reset Button
+                    submitBtn.disabled = false;
+                    btnText.style.display = 'inline';
+                    loader.style.display = 'none';
+                }
+            });
+
+            // 3. Gestion OAuth (Google)
+            const btnGoogle = document.getElementById('btn-google');
+            btnGoogle.addEventListener('click', async () => {
+                try {
+                    await loginWithOAuth('google');
+                } catch (err) {
+                    console.error('OAuth error:', err);
+                    errorDiv.textContent = "Erreur lors de la connexion avec Google.";
+                    errorDiv.style.display = 'block';
+                }
+            });
+
+            // 4. Gestion OAuth (GitHub)
+            const btnGithub = document.getElementById('btn-github');
+            btnGithub.addEventListener('click', async () => {
+                try {
+                    await loginWithOAuth('github');
+                } catch (err) {
+                    console.error('OAuth error:', err);
+                    errorDiv.textContent = "Erreur lors de la connexion avec GitHub.";
+                    errorDiv.style.display = 'block';
+                }
+            });
+
+            // 5. Toggle Password Visibility
+            const togglePasswordBtn = document.querySelector('.toggle-password');
+            togglePasswordBtn.addEventListener('click', () => {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                togglePasswordBtn.querySelector('i').classList.toggle('fa-eye');
+                togglePasswordBtn.querySelector('i').classList.toggle('fa-eye-slash');
+            });
+        });
+    </script>
+</body>
+</html>

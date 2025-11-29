@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Introuvable - WebForge AI</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body {
+            background-color: var(--bg-dark);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        .error-container {
+            text-align: center;
+            z-index: 10;
+            padding: 2rem;
+            max-width: 600px;
+        }
+
+        .error-code {
+            font-size: 8rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 1rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .error-title {
+            font-size: 2rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        .error-desc {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .hero-bg-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="error-container">
+        <h1 class="error-code">404</h1>
+        <h2 class="error-title">Page Introuvable</h2>
+        <p class="error-desc">
+            Il semblerait que vous ayez atteint les limites de l'univers connu. 
+            La page que vous recherchez n'existe pas ou a été déplacée.
+        </p>
+        
+        <a href="index.html" id="back-btn" class="btn-primary btn-lg">
+            <i class="fa-solid fa-house"></i> Retour à l'accueil
+        </a>
+    </div>
+
+    <div class="hero-bg-glow"></div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    
+    <!-- Supabase Logic -->
+    <script type="module">
+        import { checkSession } from './auth-oauth.js';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Vérification intelligente de la session pour le lien de retour
+            const session = await checkSession();
+            const btn = document.getElementById('back-btn');
+
+            if (session) {
+                // Si connecté, on renvoie vers le Dashboard
+                btn.href = 'dashboard.html';
+                btn.innerHTML = '<i class="fa-solid fa-gauge-high"></i> Retour au Dashboard';
+            } else {
+                // Si visiteur, on renvoie vers l'Accueil (déjà par défaut, mais on s'assure)
+                btn.href = 'index.html';
+                btn.innerHTML = '<i class="fa-solid fa-house"></i> Retour à l\'accueil';
+            }
+        });
+    </script>
+</body>
+</html>

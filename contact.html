@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact & Support - WebForge AI</title>
+    <meta name="description" content="Contactez l'équipe de WebForge AI pour toute question technique, commerciale ou demande de support.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="main-nav glass">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-cube"></i> WebForge<span>AI</span>
+            </a>
+            
+            <div class="burger-menu" id="burger-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <div class="nav-links" id="nav-links">
+                <a href="features.html">Fonctionnalités</a>
+                <a href="index.html#demo">Démo</a>
+                <a href="pricing.html">Tarifs</a>
+                <a href="contact.html" class="active">Contact</a>
+                
+                <div class="auth-buttons" id="auth-buttons">
+                    <!-- Injecté via JS -->
+                    <a href="login.html" class="nav-link">Connexion</a>
+                    <a href="register.html" class="btn-primary">Commencer Gratuitement</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="hero small-hero">
+        <div class="container hero-content text-center">
+            <h1>Contactez <span class="gradient-text">l'équipe</span></h1>
+            <p>Une question ? Un bug ? Une suggestion ? Nous sommes là pour vous aider.</p>
+        </div>
+        <div class="hero-bg-glow"></div>
+    </header>
+
+    <!-- Contact Section -->
+    <section class="section contact-section">
+        <div class="container">
+            <div class="row">
+                <!-- Contact Form -->
+                <div class="col-md-7">
+                    <div class="card glass">
+                        <h3 class="mb-4">Envoyez-nous un message</h3>
+                        
+                        <form id="contact-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="name">Nom complet</label>
+                                    <div class="input-wrapper">
+                                        <i class="fa-solid fa-user input-icon"></i>
+                                        <input type="text" id="name" name="name" placeholder="Votre nom" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <div class="input-wrapper">
+                                        <i class="fa-solid fa-envelope input-icon"></i>
+                                        <input type="email" id="email" name="email" placeholder="votre@email.com" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="subject">Sujet</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-tag input-icon"></i>
+                                    <select id="subject" name="subject" required class="form-select">
+                                        <option value="" disabled selected>Choisir un sujet...</option>
+                                        <option value="support">Support Technique</option>
+                                        <option value="sales">Commercial / Tarifs</option>
+                                        <option value="bug">Signaler un bug</option>
+                                        <option value="feature">Suggestion de fonctionnalité</option>
+                                        <option value="other">Autre</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="message">Message</label>
+                                <textarea id="message" name="message" rows="6" placeholder="Comment pouvons-nous vous aider ?" required></textarea>
+                            </div>
+
+                            <div id="form-feedback" class="alert" style="display: none;"></div>
+
+                            <button type="submit" class="btn-primary full-width" id="submit-btn">
+                                <span class="btn-text">Envoyer le message</span>
+                                <span class="loader" style="display: none;"></span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="col-md-5">
+                    <div class="contact-info-wrapper">
+                        <div class="card glass mb-4">
+                            <div class="info-item">
+                                <div class="icon-box">
+                                    <i class="fa-solid fa-envelope"></i>
+                                </div>
+                                <div>
+                                    <h4>Email</h4>
+                                    <p><a href="mailto:support@webforge.ai">support@webforge.ai</a></p>
+                                    <p class="text-sm text-muted">Réponse sous 24h ouvrées</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card glass mb-4">
+                            <div class="info-item">
+                                <div class="icon-box">
+                                    <i class="fa-brands fa-discord"></i>
+                                </div>
+                                <div>
+                                    <h4>Communauté</h4>
+                                    <p><a href="#">Rejoindre le Discord</a></p>
+                                    <p class="text-sm text-muted">Discutez avec d'autres créateurs</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card glass">
+                            <div class="info-item">
+                                <div class="icon-box">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                </div>
+                                <div>
+                                    <h4>Siège Social</h4>
+                                    <p>WebForge AI Inc.</p>
+                                    <p class="text-muted">123 Tech Avenue<br>75000 Paris, France</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Teaser -->
+    <section class="section">
+        <div class="container text-center">
+            <h2>Besoin d'une réponse rapide ?</h2>
+            <p class="mb-4">Consultez notre foire aux questions avant de nous contacter.</p>
+            <a href="pricing.html" class="btn-secondary">Voir la FAQ</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>WebForge AI</h4>
+                    <p>La plateforme de génération de sites web nouvelle génération.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Produit</h4>
+                    <a href="features.html">Fonctionnalités</a>
+                    <a href="pricing.html">Tarifs</a>
+                    <a href="dashboard.html">Dashboard</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Légal</h4>
+                    <a href="#">Mentions légales</a>
+                    <a href="#">Confidentialité</a>
+                    <a href="#">CGU</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Social</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#"><i class="fa-brands fa-github"></i></a>
+                        <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 WebForge AI. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    
+    <!-- Supabase Logic -->
+    <script type="module">
+        import { supabase } from './supabaseClient.js';
+        import { checkSession, logout } from './auth-oauth.js';
+
+        let currentUser = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 1. Vérification de la session
+            const session = await checkSession();
+            const authButtonsContainer = document.getElementById('auth-buttons');
+
+            if (session) {
+                currentUser = session.user;
+
+                // Mise à jour du menu
+                authButtonsContainer.innerHTML = `
+                    <a href="dashboard.html" class="btn-secondary">
+                        <i class="fa-solid fa-gauge"></i> Dashboard
+                    </a>
+                    <button id="btn-logout-nav" class="btn-logout">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                `;
+
+                // Gestionnaire de déconnexion
+                document.getElementById('btn-logout-nav').addEventListener('click', async () => {
+                    await logout();
+                    window.location.reload();
+                });
+
+                // 2. Pré-remplissage du formulaire
+                const emailInput = document.getElementById('email');
+                const nameInput = document.getElementById('name');
+
+                emailInput.value = currentUser.email;
+                emailInput.readOnly = true; // Empêcher la modif pour cohérence
+                emailInput.style.opacity = "0.7";
+
+                // Essayer de récupérer le nom depuis le profil
+                try {
+                    const { data: profile } = await supabase
+                        .from('profiles')
+                        .select('full_name')
+                        .eq('id', currentUser.id)
+                        .single();
+
+                    if (profile && profile.full_name) {
+                        nameInput.value = profile.full_name;
+                    } else if (currentUser.user_metadata && currentUser.user_metadata.full_name) {
+                        nameInput.value = currentUser.user_metadata.full_name;
+                    }
+                } catch (err) {
+                    console.log("Info profil non dispo", err);
+                }
+            }
+
+            // 3. Gestion de l'envoi du formulaire
+            const contactForm = document.getElementById('contact-form');
+            const submitBtn = document.getElementById('submit-btn');
+            const feedback = document.getElementById('form-feedback');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const loader = submitBtn.querySelector('.loader');
+
+            contactForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                // UI Loading
+                submitBtn.disabled = true;
+                btnText.style.display = 'none';
+                loader.style.display = 'inline-block';
+                feedback.style.display = 'none';
+
+                const formData = {
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    subject: document.getElementById('subject').value,
+                    message: document.getElementById('message').value,
+                    user_id: currentUser ? currentUser.id : null, // Null si visiteur
+                    status: 'open'
+                };
+
+                try {
+                    // Insertion dans Supabase
+                    const { error } = await supabase
+                        .from('support_tickets')
+                        .insert(formData);
+
+                    if (error) throw error;
+
+                    // Succès
+                    feedback.className = 'alert alert-success';
+                    feedback.innerHTML = '<i class="fa-solid fa-check-circle"></i> Message envoyé avec succès ! Nous vous répondrons bientôt.';
+                    feedback.style.display = 'block';
+                    contactForm.reset();
+
+                    // Si connecté, remettre l'email
+                    if (currentUser) {
+                        document.getElementById('email').value = currentUser.email;
+                    }
+
+                } catch (err) {
+                    console.error("Erreur envoi:", err);
+                    feedback.className = 'alert alert-danger';
+                    feedback.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Une erreur est survenue. Veuillez réessayer.';
+                    feedback.style.display = 'block';
+                } finally {
+                    submitBtn.disabled = false;
+                    btnText.style.display = 'inline';
+                    loader.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

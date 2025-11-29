@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouveau Projet - WebForge AI</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* Wizard Specific Styles */
+        body {
+            background-color: var(--bg-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .wizard-nav {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(30, 30, 46, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .wizard-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .progress-track {
+            background: rgba(255, 255, 255, 0.1);
+            height: 4px;
+            width: 100%;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        .progress-fill {
+            background: var(--primary-color);
+            height: 4px;
+            width: 0%;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 2;
+            transition: width 0.4s ease;
+        }
+
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            z-index: 3;
+        }
+
+        .step-indicator {
+            width: 32px;
+            height: 32px;
+            background: var(--bg-card);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+
+        .step-indicator.active {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
+        }
+
+        .step-indicator.completed {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Step Content */
+        .step-content {
+            width: 100%;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        .step-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .step-header h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Selection Grids */
+        .selection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .selection-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .selection-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-5px);
+        }
+
+        .selection-card.selected {
+            border-color: var(--primary-color);
+            background: rgba(99, 102, 241, 0.1);
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
+        }
+
+        .selection-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+        }
+
+        .selection-card.selected .selection-icon {
+            color: var(--primary-color);
+        }
+
+        /* Form Inputs */
+        .wizard-form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .wizard-form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .wizard-input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-family: inherit;
+        }
+
+        .wizard-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        /* Checkboxes */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .feature-checkbox {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .feature-checkbox:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .feature-checkbox.selected {
+            border-color: var(--primary-color);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .feature-checkbox i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        /* Navigation Buttons */
+        .wizard-actions {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 15, 20, 0.9);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ai-loader {
+            width: 80px;
+            height: 80px;
+            border: 4px solid rgba(99, 102, 241, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s linear infinite;
+            margin-bottom: 1.5rem;
+        }
+
+        .loading-text {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    </style>
+</head>
+<body>
+
+    <!-- Nav -->
+    <nav class="wizard-nav">
+        <a href="dashboard.html" class="logo">
+            <i class="fa-solid fa-cube"></i> WebForge<span>AI</span>
+        </a>
+        <a href="dashboard.html" class="btn-secondary btn-sm">
+            <i class="fa-solid fa-xmark"></i> Annuler
+        </a>
+    </nav>
+
+    <!-- Wizard Container -->
+    <div class="wizard-container">
+        
+        <!-- Progress -->
+        <div class="progress-container">
+            <div class="progress-track"></div>
+            <div class="progress-fill" id="progress-fill"></div>
+            <div class="steps">
+                <div class="step-indicator active" data-step="1">1</div>
+                <div class="step-indicator" data-step="2">2</div>
+                <div class="step-indicator" data-step="3">3</div>
+                <div class="step-indicator" data-step="4">4</div>
+                <div class="step-indicator" data-step="5">5</div>
+            </div>
+        </div>
+
+        <!-- Step 1: Type -->
+        <div class="step-content active" id="step-1">
+            <div class="step-header">
+                <h2>Type de Projet</h2>
+                <p>Que souhaitez-vous construire aujourd'hui ?</p>
+            </div>
+            <div class="selection-grid">
+                <div class="selection-card" onclick="selectOption('type', 'landing', this)">
+                    <div class="selection-icon"><i class="fa-solid fa-rocket"></i></div>
+                    <h3>Landing Page</h3>
+                    <p>Idéal pour présenter un produit ou une application.</p>
+                </div>
+                <div class="selection-card" onclick="selectOption('type', 'portfolio', this)">
+                    <div class="selection-icon"><i class="fa-solid fa-user-tie"></i></div>
+                    <h3>Portfolio</h3>
+                    <p>Mettez en valeur vos compétences et projets.</p>
+                </div>
+                <div class="selection-card" onclick="selectOption('type', 'business', this)">
+                    <div class="selection-icon"><i class="fa-solid fa-building"></i></div>
+                    <h3>Site Vitrine</h3>
+                    <p>Présence professionnelle pour votre entreprise.</p>
+                </div>
+                <div class="selection-card" onclick="selectOption('type', 'blog', this)">
+                    <div class="selection-icon"><i class="fa-solid fa-pen-nib"></i></div>
+                    <h3>Blog</h3>
+                    <p>Partagez vos articles et actualités.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Style -->
+        <div class="step-content" id="step-2">
+            <div class="step-header">
+                <h2>Style Visuel</h2>
+                <p>Quelle ambiance correspond le mieux à votre marque ?</p>
+            </div>
+            <div class="selection-grid">
+                <div class="selection-card" onclick="selectOption('style', 'modern', this)">
+                    <div class="selection-icon"><i class="fa-solid fa-layer-group"></i></div>
+                    <h3>Moderne</h3>
+                    <p>Épuré, spacieux, typographie sans-serif.</p>
+                </div>
+                <div class="selection-card" onclick="selectOption('style', 'minimalist', this)">
+                    <div class="selection-icon"><i class="fa-regular fa-square"></i></div>
+                    <h3>Minimaliste</h3>
+                    <p>L'essentiel, rien de plus. Noir et blanc.</p>
+                </div>
+                <div class="selection-card" onclick="selectOption('style', 'creative', this)">
+                    <div class="selection-icon"><i class="fa-solid fa-palette"></i></div>
+                    <h3>Créatif</h3>
+                    <p>Couleurs vives, formes organiques.</p>
+                </div>
+                <div class="selection-card" onclick="selectOption('style', 'tech', this)">
+                    <div class="selection-icon"><i class="fa-solid fa-microchip"></i></div>
+                    <h3>Tech / Dark</h3>
+                    <p>Thème sombre, néons, futuriste.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Features -->
+        <div class="step-content" id="step-3">
+            <div class="step-header">
+                <h2>Fonctionnalités</h2>
+                <p>Sélectionnez les composants à intégrer.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-checkbox" onclick="toggleFeature('contact_form', this)">
+                    <i class="fa-regular fa-envelope"></i> Formulaire de contact
+                </div>
+                <div class="feature-checkbox" onclick="toggleFeature('gallery', this)">
+                    <i class="fa-regular fa-images"></i> Galerie d'images
+                </div>
+                <div class="feature-checkbox" onclick="toggleFeature('testimonials', this)">
+                    <i class="fa-regular fa-comment-dots"></i> Témoignages
+                </div>
+                <div class="feature-checkbox" onclick="toggleFeature('pricing', this)">
+                    <i class="fa-solid fa-tags"></i> Table de prix
+                </div>
+                <div class="feature-checkbox" onclick="toggleFeature('faq', this)">
+                    <i class="fa-solid fa-circle-question"></i> FAQ
+                </div>
+                <div class="feature-checkbox" onclick="toggleFeature('newsletter', this)">
+                    <i class="fa-solid fa-paper-plane"></i> Newsletter
+                </div>
+                <div class="feature-checkbox" onclick="toggleFeature('social_links', this)">
+                    <i class="fa-solid fa-share-nodes"></i> Liens Sociaux
+                </div>
+                <div class="feature-checkbox" onclick="toggleFeature('map', this)">
+                    <i class="fa-solid fa-map-location-dot"></i> Carte Google Maps
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Details -->
+        <div class="step-content" id="step-4">
+            <div class="step-header">
+                <h2>Détails du Projet</h2>
+                <p>Donnez une identité à votre site.</p>
+            </div>
+            <div style="max-width: 600px; margin: 0 auto;">
+                <div class="wizard-form-group">
+                    <label for="project-name">Nom du Projet</label>
+                    <input type="text" id="project-name" class="wizard-input" placeholder="Mon Super Site" oninput="updateFormData('name', this.value)">
+                </div>
+                <div class="wizard-form-group">
+                    <label for="project-desc">Description (Prompt IA)</label>
+                    <textarea id="project-desc" class="wizard-input" rows="4" placeholder="Décrivez votre activité, votre cible et le contenu souhaité..." oninput="updateFormData('description', this.value)"></textarea>
+                </div>
+                <div class="wizard-form-group">
+                    <label>Pages à générer</label>
+                    <div class="features-grid" style="grid-template-columns: 1fr 1fr;">
+                        <div class="feature-checkbox selected disabled" style="opacity: 0.7; cursor: not-allowed;">
+                            <i class="fa-solid fa-home"></i> Accueil (Index)
+                        </div>
+                        <div class="feature-checkbox" onclick="togglePage('about', this)">
+                            <i class="fa-solid fa-info-circle"></i> À Propos
+                        </div>
+                        <div class="feature-checkbox" onclick="togglePage('services', this)">
+                            <i class="fa-solid fa-briefcase"></i> Services
+                        </div>
+                        <div class="feature-checkbox" onclick="togglePage('contact', this)">
+                            <i class="fa-solid fa-envelope"></i> Contact
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 5: Review -->
+        <div class="step-content" id="step-5">
+            <div class="step-header">
+                <h2>Récapitulatif</h2>
+                <p>Vérifiez avant de lancer la génération.</p>
+            </div>
+            <div class="card glass" style="max-width: 600px; margin: 0 auto; padding: 2rem;">
+                <div style="margin-bottom: 1rem;">
+                    <strong>Nom :</strong> <span id="review-name">-</span>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <strong>Type :</strong> <span id="review-type">-</span>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <strong>Style :</strong> <span id="review-style">-</span>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <strong>Pages :</strong> <span id="review-pages">Accueil</span>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <strong>Fonctionnalités :</strong> <span id="review-features">-</span>
+                </div>
+                <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <p class="text-muted text-sm"><i class="fa-solid fa-wand-magic-sparkles"></i> L'IA va générer la structure HTML/CSS et le contenu de base.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="wizard-actions">
+            <button class="btn-secondary" id="btn-prev" onclick="changeStep(-1)" disabled>Précédent</button>
+            <button class="btn-primary" id="btn-next" onclick="changeStep(1)">Suivant</button>
+            <button class="btn-primary" id="btn-generate" onclick="generateProject()" style="display: none;">
+                <i class="fa-solid fa-bolt"></i> Générer le site
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="ai-loader"></div>
+        <div class="loading-text" id="loading-text">Initialisation de l'IA...</div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    
+    <!-- Supabase Logic -->
+    <script type="module">
+        import { supabase } from './supabaseClient.js';
+        import { protectPrivatePage } from './auth-oauth.js';
+
+        let currentStep = 1;
+        const totalSteps = 5;
+        let currentUser = null;
+
+        // State
+        const wizardData = {
+            type: '',
+            style: '',
+            features: [],
+            name: '',
+            description: '',
+            pages: ['index']
+        };
+
+        // Expose functions to window for HTML onclick attributes
+        window.selectOption = (category, value, element) => {
+            wizardData[category] = value;
+            
+            // Visual update
+            const container = element.parentElement;
+            const cards = container.querySelectorAll('.selection-card');
+            cards.forEach(c => c.classList.remove('selected'));
+            element.classList.add('selected');
+        };
+
+        window.toggleFeature = (feature, element) => {
+            if (wizardData.features.includes(feature)) {
+                wizardData.features = wizardData.features.filter(f => f !== feature);
+                element.classList.remove('selected');
+            } else {
+                wizardData.features.push(feature);
+                element.classList.add('selected');
+            }
+        };
+
+        window.togglePage = (page, element) => {
+            if (wizardData.pages.includes(page)) {
+                wizardData.pages = wizardData.pages.filter(p => p !== page);
+                element.classList.remove('selected');
+            } else {
+                wizardData.pages.push(page);
+                element.classList.add('selected');
+            }
+        };
+
+        window.updateFormData = (field, value) => {
+            wizardData[field] = value;
+        };
+
+        window.changeStep = (direction) => {
+            const nextStep = currentStep + direction;
+
+            // Validation
+            if (direction > 0) {
+                if (currentStep === 1 && !wizardData.type) return alert("Veuillez sélectionner un type de projet.");
+                if (currentStep === 2 && !wizardData.style) return alert("Veuillez sélectionner un style.");
+                if (currentStep === 4 && !wizardData.name) return alert("Veuillez donner un nom au projet.");
+            }
+
+            if (nextStep > 0 && nextStep <= totalSteps) {
+                // Hide current
+                document.getElementById(`step-${currentStep}`).classList.remove('active');
+                document.querySelector(`.step-indicator[data-step="${currentStep}"]`).classList.remove('active');
+                if (direction > 0) document.querySelector(`.step-indicator[data-step="${currentStep}"]`).classList.add('completed');
+                else document.querySelector(`.step-indicator[data-step="${currentStep}"]`).classList.remove('completed');
+
+                // Show next
+                currentStep = nextStep;
+                document.getElementById(`step-${currentStep}`).classList.add('active');
+                document.querySelector(`.step-indicator[data-step="${currentStep}"]`).classList.add('active');
+
+                // Update Progress Bar
+                const progressPercent = ((currentStep - 1) / (totalSteps - 1)) * 100;
+                document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+
+                // Update Buttons
+                document.getElementById('btn-prev').disabled = currentStep === 1;
+                
+                if (currentStep === totalSteps) {
+                    document.getElementById('btn-next').style.display = 'none';
+                    document.getElementById('btn-generate').style.display = 'inline-block';
+                    updateReview();
+                } else {
+                    document.getElementById('btn-next').style.display = 'inline-block';
+                    document.getElementById('btn-generate').style.display = 'none';
+                }
+            }
+        };
+
+        function updateReview() {
+            document.getElementById('review-name').textContent = wizardData.name;
+            document.getElementById('review-type').textContent = wizardData.type.charAt(0).toUpperCase() + wizardData.type.slice(1);
+            document.getElementById('review-style').textContent = wizardData.style.charAt(0).toUpperCase() + wizardData.style.slice(1);
+            document.getElementById('review-pages').textContent = wizardData.pages.join(', ');
+            document.getElementById('review-features').textContent = wizardData.features.length > 0 ? wizardData.features.join(', ') : 'Aucune';
+        }
+
+        window.generateProject = async () => {
+            const overlay = document.getElementById('loading-overlay');
+            const loadingText = document.getElementById('loading-text');
+            overlay.style.display = 'flex';
+
+            const steps = [
+                "Analyse du prompt...",
+                "Génération de la structure HTML...",
+                "Application du style CSS...",
+                "Écriture du JavaScript...",
+                "Sauvegarde dans la base de données..."
+            ];
+
+            // Simulation visuelle de l'IA
+            for (let i = 0; i < steps.length; i++) {
+                loadingText.textContent = steps[i];
+                await new Promise(r => setTimeout(r, 800));
+            }
+
+            try {
+                // 1. Création du projet dans la BDD
+                const { data: project, error: projError } = await supabase
+                    .from('projects')
+                    .insert({
+                        user_id: currentUser.id,
+                        name: wizardData.name,
+                        status: 'draft',
+                        description: wizardData.description,
+                        settings: {
+                            type: wizardData.type,
+                            style: wizardData.style,
+                            features: wizardData.features
+                        }
+                    })
+                    .select()
+                    .single();
+
+                if (projError) throw projError;
+
+                // 2. Génération du code (Simulation locale pour l'instant)
+                // Dans une vraie app, on appellerait une Edge Function OpenAI ici
+                const files = generateMockFiles(wizardData);
+
+                // 3. Insertion des fichiers
+                const fileInserts = files.map(file => ({
+                    project_id: project.id,
+                    path: file.path,
+                    content: file.content,
+                    language: file.path.endsWith('.css') ? 'css' : (file.path.endsWith('.js') ? 'javascript' : 'html')
+                }));
+
+                const { error: filesError } = await supabase
+                    .from('project_files')
+                    .insert(fileInserts);
+
+                if (filesError) throw filesError;
+
+                // 4. Redirection vers l'éditeur
+                window.location.href = `editor.html?id=${project.id}`;
+
+            } catch (err) {
+                console.error("Erreur génération:", err);
+                alert("Une erreur est survenue : " + err.message);
+                overlay.style.display = 'none';
+            }
+        };
+
+        // Fonction Mock pour générer du code de base
+        function generateMockFiles(data) {
+            const cssContent = `
+:root {
+    --primary: ${data.style === 'tech' ? '#00f2ff' : '#6366f1'};
+    --bg: ${data.style === 'tech' || data.style === 'modern' ? '#1e1e2e' : '#ffffff'};
+    --text: ${data.style === 'tech' || data.style === 'modern' ? '#ffffff' : '#333333'};
+}
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; }
+.container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+h1 { font-size: 3rem; color: var(--primary); }
+            `;
+
+            const htmlContent = `
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>${data.name}</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="container">
+        <h2>${data.name}</h2>
+    </nav>
+    <main class="container">
+        <h1>Bienvenue sur ${data.name}</h1>
+        <p>${data.description || 'Site généré par WebForge AI'}</p>
+        <button onclick="alert('Hello')">Click Me</button>
+    </main>
+    <script src="script.js"><\/script>
+</body>
+</html>
+            `;
+
+            const jsContent = `console.log('Site ${data.name} loaded');`;
+
+            return [
+                { path: 'index.html', content: htmlContent },
+                { path: 'style.css', content: cssContent },
+                { path: 'script.js', content: jsContent }
+            ];
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', async () => {
+            const session = await protectPrivatePage();
+            if (session) {
+                currentUser = session.user;
+            }
+        });
+    </script>
+</body>
+</html>

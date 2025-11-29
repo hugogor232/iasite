@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Éditeur - WebForge AI</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* IDE Specific Styles */
+        body {
+            background-color: #1e1e2e; /* Matches Monaco Dark */
+            overflow: hidden; /* Prevent body scroll, layout handles it */
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Top Bar */
+        .ide-header {
+            height: 50px;
+            background: #181825;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1rem;
+            flex-shrink: 0;
+        }
+
+        .project-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .project-name {
+            font-weight: 600;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .save-status {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .save-status.saving { color: var(--primary-color); }
+        .save-status.saved { color: #10b981; }
+
+        /* Main Layout */
+        .ide-layout {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 50px);
+            overflow: hidden;
+        }
+
+        /* Sidebar (File Explorer) */
+        .ide-sidebar {
+            width: 220px;
+            background: #181825;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            padding: 10px 15px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .file-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            padding: 8px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-left: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .file-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+        }
+
+        .file-item.active {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--text-light);
+            border-left-color: var(--primary-color);
+        }
+
+        .file-icon {
+            width: 16px;
+            text-align: center;
+        }
+        .icon-html { color: #e34c26; }
+        .icon-css { color: #264de4; }
+        .icon-js { color: #f0db4f; }
+        .icon-json { color: #cbcb41; }
+
+        /* Editor Area */
+        .ide-editor-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            position: relative;
+        }
+
+        .editor-tabs {
+            height: 35px;
+            background: #1e1e2e;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #2a2a3c;
+        }
+
+        .tab {
+            padding: 0 15px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            background: #1e1e2e;
+            border-right: 1px solid #2a2a3c;
+            cursor: pointer;
+        }
+
+        .tab.active {
+            background: #1e1e2e;
+            color: var(--text-light);
+            border-top: 2px solid var(--primary-color);
+        }
+
+        #monaco-editor {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Preview Area */
+        .ide-preview {
+            width: 40%;
+            background: white;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            transition: width 0.3s ease;
+        }
+
+        .preview-toolbar {
+            height: 35px;
+            background: #f1f5f9;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 10px;
+        }
+
+        .preview-url {
+            background: #fff;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            color: #64748b;
+            flex: 1;
+            margin: 0 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        iframe {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+
+        /* Resizer (Optional visual cue) */
+        .resizer {
+            width: 4px;
+            background: #2a2a3c;
+            cursor: col-resize;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .ide-layout {
+                flex-direction: column;
+            }
+            .ide-sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 150px;
+                display: none; /* Toggle via menu */
+            }
+            .ide-sidebar.active {
+                display: flex;
+            }
+            .ide-preview {
+                width: 100%;
+                height: 40%;
+                border-left: none;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="ide-header">
+        <div class="project-info">
+            <a href="dashboard.html" class="btn-icon" title="Retour au Dashboard">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <span class="project-name" id="project-name-display">Chargement...</span>
+            <span class="save-status" id="save-status">
+                <i class="fa-regular fa-circle-check"></i> À jour
+            </span>
+        </div>
+        <div class="ide-actions">
+            <button class="btn-secondary btn-sm" id="btn-refresh-preview" title="Rafraîchir l'aperçu">
+                <i class="fa-solid fa-rotate-right"></i>
+            </button>
+            <a href="#" target="_blank" id="btn-external-preview" class="btn-primary btn-sm">
+                <i class="fa-solid fa-external-link-alt"></i> <span class="d-none d-md-inline">Ouvrir</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="ide-layout">
+        <!-- Sidebar -->
+        <aside class="ide-sidebar" id="sidebar">
+            <div class="sidebar-header">Explorateur</div>
+            <ul class="file-list" id="file-list">
+                <!-- Files injected via JS -->
+            </ul>
+        </aside>
+
+        <!-- Editor -->
+        <div class="ide-editor-container">
+            <div class="editor-tabs">
+                <div class="tab active" id="current-tab-name">index.html</div>
+            </div>
+            <div id="monaco-editor"></div>
+        </div>
+
+        <!-- Preview -->
+        <div class="ide-preview">
+            <div class="preview-toolbar">
+                <div class="dots">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                </div>
+                <div class="preview-url" id="preview-url-display">localhost:3000</div>
+            </div>
+            <iframe id="preview-frame" sandbox="allow-scripts allow-same-origin allow-modals"></iframe>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    
+    <!-- Monaco Editor Loader -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.min.js"></script>
+
+    <!-- Supabase & Editor Logic -->
+    <script type="module">
+        import { supabase } from './supabaseClient.js';
+        import { protectPrivatePage } from './auth-oauth.js';
+
+        // State
+        let projectId = null;
+        let files = [];
+        let currentFile = null;
+        let editor = null;
+        let saveTimeout = null;
+        let isSaving = false;
+
+        // Init
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 1. Auth Check
+            const session = await protectPrivatePage();
+            if (!session) return;
+
+            // 2. Get Project ID
+            const params = new URLSearchParams(window.location.search);
+            projectId = params.get('id');
+
+            if (!projectId) {
+                alert("Projet non spécifié");
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            // 3. Load Data
+            await loadProjectMetadata();
+            await loadProjectFiles();
+
+            // 4. Init Editor
+            initMonaco();
+
+            // 5. Setup UI Events
+            document.getElementById('btn-refresh-preview').addEventListener('click', updatePreview);
+        });
+
+        async function loadProjectMetadata() {
+            const { data, error } = await supabase
+                .from('projects')
+                .select('name')
+                .eq('id', projectId)
+                .single();
+
+            if (error) {
+                console.error("Error fetching project:", error);
+                return;
+            }
+
+            document.getElementById('project-name-display').textContent = data.name;
+            document.getElementById('preview-url-display').textContent = `${data.name.toLowerCase().replace(/\s+/g, '-')}.webforge.app`;
+            
+            // Link for external preview (in a real app, this would be the deployed URL)
+            document.getElementById('btn-external-preview').href = `preview.html?id=${projectId}`;
+        }
+
+        async function loadProjectFiles() {
+            const { data, error } = await supabase
+                .from('project_files')
+                .select('*')
+                .eq('project_id', projectId)
+                .order('path');
+
+            if (error) {
+                console.error("Error fetching files:", error);
+                return;
+            }
+
+            files = data;
+            renderFileList();
+            
+            // Select index.html by default or first file
+            const indexFile = files.find(f => f.path === 'index.html');
+            if (indexFile) {
+                currentFile = indexFile;
+            } else if (files.length > 0) {
+                currentFile = files[0];
+            }
+        }
+
+        function renderFileList() {
+            const list = document.getElementById('file-list');
+            list.innerHTML = '';
+
+            files.forEach(file => {
+                const li = document.createElement('li');
+                li.className = `file-item ${currentFile && currentFile.id === file.id ? 'active' : ''}`;
+                li.onclick = () => switchFile(file);
+
+                let iconClass = 'fa-file';
+                let colorClass = '';
+                
+                if (file.path.endsWith('.html')) { iconClass = 'fa-brands fa-html5'; colorClass = 'icon-html'; }
+                else if (file.path.endsWith('.css')) { iconClass = 'fa-brands fa-css3-alt'; colorClass = 'icon-css'; }
+                else if (file.path.endsWith('.js')) { iconClass = 'fa-brands fa-js'; colorClass = 'icon-js'; }
+                else if (file.path.endsWith('.json')) { iconClass = 'fa-solid fa-code'; colorClass = 'icon-json'; }
+
+                li.innerHTML = `
+                    <span class="file-icon ${colorClass}"><i class="${iconClass}"></i></span>
+                    ${file.path}
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        function initMonaco() {
+            require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' }});
+
+            require(['vs/editor/editor.main'], function() {
+                if (!currentFile) return;
+
+                editor = monaco.editor.create(document.getElementById('monaco-editor'), {
+                    value: currentFile.content,
+                    language: getLanguageFromPath(currentFile.path),
+                    theme: 'vs-dark',
+                    automaticLayout: true,
+                    fontFamily: 'Fira Code, monospace',
+                    fontSize: 14,
+                    minimap: { enabled: false },
+                    scrollBeyondLastLine: false,
+                    padding: { top: 16 }
+                });
+
+                // Auto-save listener
+                editor.onDidChangeModelContent(() => {
+                    handleContentChange();
+                });
+
+                // Initial preview
+                updatePreview();
+            });
+        }
+
+        function switchFile(file) {
+            if (currentFile && currentFile.id === file.id) return;
+
+            // Save current state locally before switching (though we sync on change)
+            // Ideally we should ensure the last change is saved to DB or memory
+            
+            currentFile = file;
+            renderFileList();
+            document.getElementById('current-tab-name').textContent = file.path;
+
+            if (editor) {
+                const model = editor.getModel();
+                monaco.editor.setModelLanguage(model, getLanguageFromPath(file.path));
+                editor.setValue(file.content);
+            }
+        }
+
+        function getLanguageFromPath(path) {
+            if (path.endsWith('.html')) return 'html';
+            if (path.endsWith('.css')) return 'css';
+            if (path.endsWith('.js')) return 'javascript';
+            if (path.endsWith('.json')) return 'json';
+            return 'plaintext';
+        }
+
+        function handleContentChange() {
+            // Update local state
+            const content = editor.getValue();
+            currentFile.content = content;
+
+            // UI Feedback
+            const statusEl = document.getElementById('save-status');
+            statusEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sauvegarde...';
+            statusEl.className = 'save-status saving';
+
+            // Debounce Save to DB
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(async () => {
+                await saveToSupabase(currentFile.id, content);
+                updatePreview(); // Live preview update
+            }, 1000); // 1 second debounce
+        }
+
+        async function saveToSupabase(fileId, content) {
+            try {
+                const { error } = await supabase
+                    .from('project_files')
+                    .update({ content: content })
+                    .eq('id', fileId);
+
+                if (error) throw error;
+
+                const statusEl = document.getElementById('save-status');
+                statusEl.innerHTML = '<i class="fa-regular fa-circle-check"></i> Sauvegardé';
+                statusEl.className = 'save-status saved';
+
+            } catch (err) {
+                console.error("Save error:", err);
+                const statusEl = document.getElementById('save-status');
+                statusEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Erreur';
+                statusEl.style.color = '#ef4444';
+            }
+        }
+
+        function updatePreview() {
+            const frame = document.getElementById('preview-frame');
+            
+            // Find contents
+            const htmlFile = files.find(f => f.path === 'index.html');
+            const cssFile = files.find(f => f.path === 'style.css');
+            const jsFile = files.find(f => f.path === 'script.js');
+
+            if (!htmlFile) return;
+
+            let html = htmlFile.content;
+            const css = cssFile ? cssFile.content : '';
+            const js = jsFile ? jsFile.content : '';
+
+            // Inject CSS
+            if (css) {
+                const styleTag = `<style>${css}</style>`;
+                if (html.includes('</head>')) {
+                    html = html.replace('</head>', `${styleTag}</head>`);
+                } else {
+                    html += styleTag;
+                }
+            }
+
+            // Inject JS (Robust way: Blob URL or Data URI, but simple injection works for basic preview)
+            // We remove external script tags referencing local files to avoid 404s in blob
+            html = html.replace(/<script src="script.js"><\/script>/g, '');
+            html = html.replace(/<link rel="stylesheet" href="style.css">/g, '');
+
+            if (js) {
+                const scriptTag = `<script>${js}<\/script>`;
+                if (html.includes('</body>')) {
+                    html = html.replace('</body>', `${scriptTag}</body>`);
+                } else {
+                    html += scriptTag;
+                }
+            }
+
+            // Create Blob URL
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            frame.src = url;
+        }
+    </script>
+</body>
+</html>

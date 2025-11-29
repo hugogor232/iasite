@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Profil - WebForge AI</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* Layout overrides */
+        body {
+            background-color: var(--bg-dark);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .dashboard-layout {
+            display: flex;
+            width: 100%;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: rgba(30, 30, 46, 0.95);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header { padding: 2rem 1.5rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .sidebar-nav { flex: 1; padding: 1.5rem 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        
+        .nav-item {
+            display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+            color: var(--text-muted); text-decoration: none; border-radius: 8px; transition: all 0.2s;
+        }
+        .nav-item:hover, .nav-item.active { background: rgba(255, 255, 255, 0.05); color: var(--text-light); }
+        .nav-item.active { background: linear-gradient(90deg, rgba(99, 102, 241, 0.1) 0%, transparent 100%); border-left: 3px solid var(--primary-color); }
+
+        .main-content-wrapper {
+            flex: 1;
+            margin-left: 260px;
+            padding: 2rem;
+            width: calc(100% - 260px);
+        }
+
+        /* Profile Specific Styles */
+        .profile-header {
+            margin-bottom: 2rem;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .profile-card {
+            background: rgba(30, 30, 46, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Avatar Upload */
+        .avatar-upload {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .avatar-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            overflow: hidden;
+            position: relative;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .avatar-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .upload-btn-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .upload-btn-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* Forms */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-family: inherit;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .form-control[readonly] {
+            background: rgba(255, 255, 255, 0.02);
+            cursor: not-allowed;
+            color: var(--text-muted);
+        }
+
+        /* Subscription Badge */
+        .plan-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .plan-free { background: rgba(255, 255, 255, 0.1); color: var(--text-light); }
+        .plan-pro { background: rgba(99, 102, 241, 0.2); color: var(--primary-color); border: 1px solid var(--primary-color); }
+        .plan-enterprise { background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid #f59e0b; }
+
+        /* Invoice Table */
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .invoice-table th { text-align: left; padding: 10px; color: var(--text-muted); border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .invoice-table td { padding: 10px; color: var(--text-light); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .invoice-table tr:last-child td { border-bottom: none; }
+
+        .download-link { color: var(--primary-color); text-decoration: none; }
+        .download-link:hover { text-decoration: underline; }
+
+        /* Danger Zone */
+        .danger-zone {
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid #ef4444;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-danger:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        @media (max-width: 992px) {
+            .profile-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.active { transform: translateX(0); }
+            .main-content-wrapper { margin-left: 0; width: 100%; padding: 1rem; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="logo">
+                    <i class="fa-solid fa-cube"></i> WebForge<span>AI</span>
+                </a>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fa-solid fa-gauge-high"></i> Tableau de bord
+                </a>
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fa-solid fa-layer-group"></i> Mes Projets
+                </a>
+                <a href="analytics.html" class="nav-item">
+                    <i class="fa-solid fa-chart-pie"></i> Analytics
+                </a>
+                <a href="profile.html" class="nav-item active">
+                    <i class="fa-solid fa-user-gear"></i> Mon Profil
+                </a>
+            </nav>
+
+            <div class="sidebar-footer" style="padding: 1.5rem; border-top: 1px solid rgba(255,255,255,0.05);">
+                <button id="btn-logout" class="btn-secondary full-width btn-sm">
+                    <i class="fa-solid fa-right-from-bracket"></i> Déconnexion
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content-wrapper">
+            <!-- Mobile Toggle -->
+            <div class="mobile-header d-md-none mb-4" style="display: flex; justify-content: space-between; align-items: center;">
+                <button class="btn-icon" id="sidebar-toggle" style="background:none; border:none; color:white; font-size:1.5rem;">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="logo">WebForge<span>AI</span></div>
+            </div>
+
+            <div class="profile-header">
+                <h1>Mon Profil</h1>
+                <p class="text-muted">Gérez vos informations personnelles et votre abonnement.</p>
+            </div>
+
+            <div class="profile-grid">
+                <!-- Left Column: Personal Info -->
+                <div class="left-col">
+                    <div class="profile-card">
+                        <h3 class="section-title"><i class="fa-solid fa-user"></i> Informations Personnelles</h3>
+                        
+                        <div class="avatar-upload">
+                            <div class="avatar-preview" id="avatar-preview">
+                                <span>U</span>
+                            </div>
+                            <div class="upload-actions">
+                                <div class="upload-btn-wrapper">
+                                    <button class="btn-secondary">Changer l'avatar</button>
+                                    <input type="file" id="avatar-input" accept="image/*">
+                                </div>
+                                <p class="text-muted text-sm mt-2">JPG, PNG ou GIF. Max 2MB.</p>
+                            </div>
+                        </div>
+
+                        <form id="profile-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="full-name">Nom Complet</label>
+                                    <input type="text" id="full-name" class="form-control" placeholder="Votre nom">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="email" id="email" class="form-control" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group mb-4">
+                                <label for="website">Site Web / Portfolio</label>
+                                <input type="url" id="website" class="form-control" placeholder="https://mon-site.com">
+                            </div>
+
+                            <div id="form-message" class="alert" style="display: none; margin-bottom: 1rem;"></div>
+
+                            <button type="submit" class="btn-primary" id="save-profile-btn">
+                                <i class="fa-solid fa-floppy-disk"></i> Enregistrer les modifications
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="profile-card danger-zone">
+                        <h3 class="section-title" style="color: #ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> Zone de Danger</h3>
+                        <p class="text-muted mb-3">La suppression de votre compte est irréversible. Tous vos projets et données seront effacés.</p>
+                        <button class="btn-danger" onclick="alert('Veuillez contacter le support pour supprimer votre compte.')">Supprimer mon compte</button>
+                    </div>
+                </div>
+
+                <!-- Right Column: Subscription -->
+                <div class="right-col">
+                    <div class="profile-card">
+                        <h3 class="section-title"><i class="fa-solid fa-credit-card"></i> Abonnement</h3>
+                        
+                        <div class="current-plan mb-4">
+                            <p class="text-muted mb-1">Plan Actuel</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <h2 id="plan-name" class="m-0">Chargement...</h2>
+                                <span id="plan-badge" class="plan-badge plan-free">Free</span>
+                            </div>
+                        </div>
+
+                        <button class="btn-primary full-width mb-3" onclick="window.location.href='pricing.html'">
+                            Mettre à niveau
+                        </button>
+                        <button class="btn-secondary full-width">
+                            Gérer la facturation (Stripe)
+                        </button>
+                    </div>
+
+                    <div class="profile-card">
+                        <h3 class="section-title"><i class="fa-solid fa-file-invoice"></i> Factures</h3>
+                        <div class="table-responsive">
+                            <table class="invoice-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Montant</th>
+                                        <th>PDF</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="invoices-list">
+                                    <!-- Injected via JS -->
+                                    <tr>
+                                        <td colspan="3" class="text-center text-muted">Aucune facture disponible</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    
+    <!-- Supabase Logic -->
+    <script type="module">
+        import { supabase } from './supabaseClient.js';
+        import { protectPrivatePage, logout } from './auth-oauth.js';
+
+        let currentUser = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 1. Auth Check
+            const session = await protectPrivatePage();
+            if (!session) return;
+            currentUser = session.user;
+
+            // 2. Setup UI
+            setupEventListeners();
+            
+            // 3. Load Data
+            await loadProfile();
+            await loadSubscription();
+        });
+
+        function setupEventListeners() {
+            // Logout
+            document.getElementById('btn-logout').addEventListener('click', async () => {
+                await logout();
+            });
+
+            // Mobile Sidebar
+            const toggleBtn = document.getElementById('sidebar-toggle');
+            const sidebar = document.getElementById('sidebar');
+            if(toggleBtn) {
+                toggleBtn.addEventListener('click', () => sidebar.classList.toggle('active'));
+            }
+
+            // Avatar Upload
+            document.getElementById('avatar-input').addEventListener('change', uploadAvatar);
+
+            // Profile Form Submit
+            document.getElementById('profile-form').addEventListener('submit', updateProfile);
+        }
+
+        async function loadProfile() {
+            try {
+                // Set Email (from Auth)
+                document.getElementById('email').value = currentUser.email;
+
+                // Fetch Profile Data
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('full_name, avatar_url, website')
+                    .eq('id', currentUser.id)
+                    .single();
+
+                if (error && error.code !== 'PGRST116') throw error; // Ignore not found error
+
+                if (data) {
+                    document.getElementById('full-name').value = data.full_name || '';
+                    document.getElementById('website').value = data.website || '';
+                    
+                    if (data.avatar_url) {
+                        updateAvatarPreview(data.avatar_url);
+                    } else {
+                        updateAvatarPreview(null, data.full_name || currentUser.email);
+                    }
+                }
+
+            } catch (err) {
+                console.error("Erreur chargement profil:", err);
+            }
+        }
+
+        async function updateProfile(e) {
+            e.preventDefault();
+            const btn = document.getElementById('save-profile-btn');
+            const msg = document.getElementById('form-message');
+            
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enregistrement...';
+            msg.style.display = 'none';
+
+            const updates = {
+                id: currentUser.id,
+                full_name: document.getElementById('full-name').value,
+                website: document.getElementById('website').value,
+                updated_at: new Date()
+            };
+
+            try {
+                const { error } = await supabase
+                    .from('profiles')
+                    .upsert(updates);
+
+                if (error) throw error;
+
+                msg.className = 'alert alert-success';
+                msg.textContent = 'Profil mis à jour avec succès !';
+                msg.style.display = 'block';
+
+            } catch (err) {
+                console.error("Update error:", err);
+                msg.className = 'alert alert-danger';
+                msg.textContent = 'Erreur lors de la mise à jour.';
+                msg.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Enregistrer les modifications';
+            }
+        }
+
+        async function uploadAvatar(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${currentUser.id}-${Math.random()}.${fileExt}`;
+            const filePath = `${fileName}`;
+
+            try {
+                // 1. Upload to Storage
+                const { error: uploadError } = await supabase.storage
+                    .from('avatars')
+                    .upload(filePath, file);
+
+                if (uploadError) throw uploadError;
+
+                // 2. Get Public URL
+                const { data: { publicUrl } } = supabase.storage
+                    .from('avatars')
+                    .getPublicUrl(filePath);
+
+                // 3. Update Profile
+                const { error: updateError } = await supabase
+                    .from('profiles')
+                    .upsert({
+                        id: currentUser.id,
+                        avatar_url: publicUrl,
+                        updated_at: new Date()
+                    });
+
+                if (updateError) throw updateError;
+
+                // 4. Update UI
+                updateAvatarPreview(publicUrl);
+
+            } catch (err) {
+                console.error("Avatar upload error:", err);
+                alert("Erreur lors de l'upload de l'avatar. Vérifiez que l'image fait moins de 2MB.");
+            }
+        }
+
+        function updateAvatarPreview(url, name = null) {
+            const preview = document.getElementById('avatar-preview');
+            if (url) {
+                preview.innerHTML = `<img src="${url}" alt="Avatar">`;
+                preview.style.background = 'transparent';
+            } else {
+                const initial = name ? name.charAt(0).toUpperCase() : 'U';
+                preview.innerHTML = `<span>${initial}</span>`;
+                preview.style.background = 'var(--gradient-primary)';
+            }
+        }
+
+        async function loadSubscription() {
+            // Mock Data for Subscription (Real implementation would query 'subscriptions' table synced with Stripe)
+            const planNameEl = document.getElementById('plan-name');
+            const planBadgeEl = document.getElementById('plan-badge');
+            const invoicesList = document.getElementById('invoices-list');
+
+            try {
+                const { data, error } = await supabase
+                    .from('subscriptions')
+                    .select('plan, status')
+                    .eq('user_id', currentUser.id)
+                    .maybeSingle();
+
+                let plan = 'free';
+                if (data && data.plan) plan = data.plan;
+
+                if (plan === 'pro') {
+                    planNameEl.textContent = 'Pro';
+                    planBadgeEl.className = 'plan-badge plan-pro';
+                    planBadgeEl.textContent = 'Pro';
+                } else if (plan === 'enterprise') {
+                    planNameEl.textContent = 'Enterprise';
+                    planBadgeEl.className = 'plan-badge plan-enterprise';
+                    planBadgeEl.textContent = 'Ent.';
+                } else {
+                    planNameEl.textContent = 'Gratuit';
+                    planBadgeEl.className = 'plan-badge plan-free';
+                    planBadgeEl.textContent = 'Free';
+                }
+
+                // Mock Invoices
+                if (plan !== 'free') {
+                    invoicesList.innerHTML = `
+                        <tr>
+                            <td>01/10/2023</td>
+                            <td>29.00 €</td>
+                            <td><a href="#" class="download-link"><i class="fa-solid fa-download"></i> PDF</a></td>
+                        </tr>
+                        <tr>
+                            <td>01/09/2023</td>
+                            <td>29.00 €</td>
+                            <td><a href="#" class="download-link"><i class="fa-solid fa-download"></i> PDF</a></td>
+                        </tr>
+                    `;
+                }
+
+            } catch (err) {
+                console.error("Sub error:", err);
+            }
+        }
+    </script>
+</body>
+</html>

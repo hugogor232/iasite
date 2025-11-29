@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fonctionnalités IA - WebForge AI</title>
+    <meta name="description" content="Découvrez les fonctionnalités de WebForge AI : Générateur de site intelligent, éditeur de code Monaco, et infrastructure serverless sécurisée.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="main-nav glass">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-cube"></i> WebForge<span>AI</span>
+            </a>
+            
+            <div class="burger-menu" id="burger-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <div class="nav-links" id="nav-links">
+                <a href="features.html" class="active">Fonctionnalités</a>
+                <a href="index.html#demo">Démo</a>
+                <a href="index.html#pricing">Tarifs</a>
+                
+                <div class="auth-buttons" id="auth-buttons">
+                    <!-- Injecté via JS selon la session -->
+                    <a href="login.html" class="nav-link">Connexion</a>
+                    <a href="register.html" class="btn-primary">Commencer Gratuitement</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero small-hero">
+        <div class="container hero-content text-center">
+            <h1>Une suite d'outils <span class="gradient-text">Intelligents</span></h1>
+            <p>De la génération par IA à l'édition de code professionnelle, découvrez comment WebForge accélère votre développement.</p>
+        </div>
+        <div class="hero-bg-glow"></div>
+    </header>
+
+    <!-- Main Features Breakdown -->
+    <main class="main-content">
+        
+        <!-- Feature 1: AI Generator -->
+        <section class="section">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="feature-detail-text">
+                            <div class="icon-box large">
+                                <i class="fa-solid fa-brain"></i>
+                            </div>
+                            <h2>Générateur IA Contextuel</h2>
+                            <p>Notre moteur d'IA, alimenté par les derniers modèles OpenAI, comprend vos besoins en langage naturel.</p>
+                            <ul class="feature-list">
+                                <li><i class="fa-solid fa-check"></i> <strong>Wizard en 5 étapes</strong> : Structure, Style, Contenu, Fonctionnalités, SEO.</li>
+                                <li><i class="fa-solid fa-check"></i> <strong>Compréhension sémantique</strong> : Transforme "Je veux un site sombre pour un photographe" en code CSS/HTML concret.</li>
+                                <li><i class="fa-solid fa-check"></i> <strong>Génération de contenu</strong> : Textes marketing et structures de pages optimisés.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="glass card feature-preview">
+                            <div class="code-header">
+                                <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+                                <span>prompt_processor.js</span>
+                            </div>
+                            <pre><code class="language-javascript">const generateSite = async (prompt) => {
+  // Analyse sémantique
+  const context = await analyze(prompt);
+  
+  // Génération de la structure
+  const structure = await ai.buildStructure(context);
+  
+  // Écriture du code
+  return await ai.writeCode(structure);
+};</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feature 2: Monaco Editor -->
+        <section class="section bg-darker">
+            <div class="container">
+                <div class="row align-items-center reverse-mobile">
+                    <div class="col-md-6">
+                        <div class="glass card feature-preview">
+                            <img src="https://placehold.co/600x400/1e1e2e/FFF?text=Monaco+Editor+Interface" alt="Interface Éditeur" class="img-fluid rounded">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="feature-detail-text">
+                            <div class="icon-box large">
+                                <i class="fa-solid fa-code"></i>
+                            </div>
+                            <h2>Éditeur de Code Intégré</h2>
+                            <p>Ne soyez pas limité par le No-Code. WebForge intègre Monaco Editor, le moteur qui propulse VS Code.</p>
+                            <ul class="feature-list">
+                                <li><i class="fa-solid fa-check"></i> <strong>Syntax Highlighting</strong> : Support complet pour HTML, CSS, JS.</li>
+                                <li><i class="fa-solid fa-check"></i> <strong>Auto-complétion</strong> : Suggestions intelligentes pendant la frappe.</li>
+                                <li><i class="fa-solid fa-check"></i> <strong>Sauvegarde Cloud</strong> : Chaque frappe est synchronisée avec Supabase Storage.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feature 3: Infrastructure & Security -->
+        <section class="section">
+            <div class="container">
+                <div class="section-header text-center">
+                    <h2>Architecture Robuste</h2>
+                    <p>Sécurité et performance ne sont pas des options.</p>
+                </div>
+
+                <div class="grid-3">
+                    <div class="card glass">
+                        <i class="fa-solid fa-database fa-2x mb-3 text-primary"></i>
+                        <h3>Supabase Backend</h3>
+                        <p>Toutes les données sont stockées dans PostgreSQL. Les fichiers sources sont gérés via Supabase Storage pour une latence minimale.</p>
+                    </div>
+                    <div class="card glass">
+                        <i class="fa-solid fa-shield-halved fa-2x mb-3 text-primary"></i>
+                        <h3>Sécurité RLS</h3>
+                        <p>Row Level Security garantit que vos projets sont strictement privés. Seul votre compte authentifié peut lire ou écrire vos données.</p>
+                    </div>
+                    <div class="card glass">
+                        <i class="fa-solid fa-bolt fa-2x mb-3 text-primary"></i>
+                        <h3>Déploiement Instantané</h3>
+                        <p>Vos sites sont servis via un CDN global. Les modifications dans l'éditeur sont reflétées en temps réel sur l'URL de prévisualisation.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technical Specs -->
+        <section class="section">
+            <div class="container">
+                <div class="glass tech-specs-container">
+                    <h3>Spécifications Techniques</h3>
+                    <div class="specs-grid">
+                        <div class="spec-item">
+                            <span class="spec-label">Frontend Généré</span>
+                            <span class="spec-value">HTML5, CSS3, Vanilla JS</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Framework CSS</span>
+                            <span class="spec-value">Flexbox / Grid (Responsive)</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Base de données</span>
+                            <span class="spec-value">PostgreSQL 15+</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Authentification</span>
+                            <span class="spec-value">JWT / OAuth 2.0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="section cta-section">
+            <div class="container text-center">
+                <h2>Prêt à tester la puissance de WebForge ?</h2>
+                <p>Créez votre compte et générez votre premier site en moins de 2 minutes.</p>
+                <a href="register.html" class="btn-primary btn-lg cta-trigger">Essayer Gratuitement</a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>WebForge AI</h4>
+                    <p>La plateforme de génération de sites web nouvelle génération.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Produit</h4>
+                    <a href="features.html">Fonctionnalités</a>
+                    <a href="index.html#pricing">Tarifs</a>
+                    <a href="dashboard.html">Dashboard</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Légal</h4>
+                    <a href="#">Mentions légales</a>
+                    <a href="#">Confidentialité</a>
+                    <a href="#">CGU</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Social</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#"><i class="fa-brands fa-github"></i></a>
+                        <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 WebForge AI. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    
+    <!-- Supabase Auth Logic -->
+    <script type="module">
+        import { checkSession, logout } from './auth-oauth.js';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 1. Vérification de la session
+            const session = await checkSession();
+            
+            // Éléments du DOM à mettre à jour
+            const authButtonsContainer = document.getElementById('auth-buttons');
+            const ctaTrigger = document.querySelector('.cta-trigger');
+
+            if (session) {
+                // --- UTILISATEUR CONNECTÉ ---
+                
+                // Mise à jour du menu
+                authButtonsContainer.innerHTML = `
+                    <a href="dashboard.html" class="btn-secondary">
+                        <i class="fa-solid fa-gauge"></i> Dashboard
+                    </a>
+                    <button id="btn-logout-nav" class="btn-logout">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                `;
+
+                // Mise à jour du CTA principal en bas de page
+                if (ctaTrigger) {
+                    ctaTrigger.textContent = 'Accéder à mon espace';
+                    ctaTrigger.href = 'dashboard.html';
+                }
+
+                // Gestionnaire de déconnexion
+                const logoutBtn = document.getElementById('btn-logout-nav');
+                if (logoutBtn) {
+                    logoutBtn.addEventListener('click', async () => {
+                        const { error } = await logout();
+                        if (!error) {
+                            window.location.href = 'index.html';
+                        }
+                    });
+                }
+
+            } else {
+                // --- VISITEUR ---
+                // Le HTML statique est déjà correct pour les visiteurs
+            }
+        });
+    </script>
+</body>
+</html>
